@@ -2,7 +2,7 @@
 node_modules
 /dist
 
-main.js
+./src/main.js
 
 # local env files
 .env.local

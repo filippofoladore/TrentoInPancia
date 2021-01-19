@@ -12,7 +12,6 @@ Vue.use(VueMaterial)
 
 Vue.config.productionTip = false;
 
-// da mettere nell'env
 const configOptions = {
   apiKey: "AIzaSyAFu6g4JJI_q0cpQdt0ehD39cs5mGDUAto",
   authDomain: "unitn-e5ef6.firebaseapp.com",
