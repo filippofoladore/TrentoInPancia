@@ -5,8 +5,7 @@
       <h1 style="margin-left:25px;margin-bottom: 40px;">Dove si mangia <br> <br><span>stasera?</span></h1>
       <input autocomplete="off" autocorrect="off" autocapitalize="off" class="input" placeholder="Cerca ristorante...">
     </div>
-    <div class="right"><img src="dinner.svg">
-  </div>
+    <div class="right"><img src="dinner.svg" scale="2"></div>
   </div>
 
   <div class="links-container">
@@ -32,6 +31,51 @@
     </div>
   </div>
 
+  <div class="suggestion">
+   <h2 style="font-size:2rem; font-weight: 500">Non trovi quello che stavi cercando?</h2>
+    <h3 style="font-size:1.25rem;  font-weight: 300">Niente paura, suggeriscicelo e lo aggiungeremo!</h3> 
+  </div>
+    
+  <div class="form-container">
+    <div class="img"><img src="send.svg" style='height: 100%; width: 100%; object-fit: contain'></div>
+    <div class="form">
+        <md-field>
+    <label>Il tuo nome</label>
+    <md-input v-model="name" autocomplete="off"></md-input>
+  </md-field>
+
+    <md-field>
+    <label>Nome del ristorante</label>
+    <md-input v-model="restname" autocomplete="off"></md-input>
+  </md-field>
+
+    <md-field>
+    <label>Numero di telefono</label>
+    <md-input v-model="phone" autocomplete="off" @keypress="isNumber($event)"></md-input>
+  </md-field>
+
+   <div v-if="error" style="color:#f44336">{{error}}</div>
+
+  <md-button style="background-color: #D2F6AD; color: #fff; width: 50%; margin: 0 auto; font-weight:900" @click="sendSuggestion">Invia</md-button>
+    </div>
+  </div>
+
+   <md-snackbar md-position="center" :md-duration="snackbarDuration" :md-active.sync="showSnackbar" md-persistent>
+        <span>Suggerimento inviato, grazie!</span>
+         <md-button class="md-primary" @click="showSnackbar = false">Chiudi</md-button>
+        </md-snackbar>
+
+  <footer style="height: 25vh; background-image: url('Footer.png'); background-repeat: no-repeat;background-size: 100% 100%;">
+      <dl style="display: flex; width: 50%; height: auto; margin: 0 auto; display: flex; align-self: center; transform: translateY(100px); justify-content: space-around">
+         <p><a href="/" style="color: black">Home</a></p>
+         <p><a href="/list" style="color: black">Lista</a></p>
+         <p><a href="/space" style="color: black">Space</a></p>
+         <p><a href="/login" style="color: black">Login</a></p>
+         <p><a href="/register" style="color: black">Registrazione</a></p>
+      </dl>
+      <p style="position:absolute; bottom:0; bottom:0px; right:25%; left:50%; margin-right: 10px;">© TrentoInPancia - 2021</p>
+  </footer>
+
 </div>
 
 </template>
@@ -39,6 +83,7 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from 'axios'
+import firebase from "firebase";
 
 export default {
   data() {
@@ -46,26 +91,35 @@ export default {
       items: [],
       bar: [],
       rest: [],
-      other: []
+      other: [],
+      name: '',
+      restname: '',
+      phone: '',
+      error: null,
+      snackbarDuration: 4000,
+      showSnackbar:false
     }
   },
+
   created() {
-    const url = 'https://os.smartcommunitylab.it/comuneintasca-multi/restaurants/TrentoInTasca'
-    const data_default = {"center": [46.067369,11.121311],"radius": 0.01}
-    axios.post(url, data_default).then(res => {
-      const populate = res.data.map(item => this.items.push(item))
-      this.rest = res.data.filter(item => item.cat.it[0] == 'Ristorante' || item.cat.it[0] == 'Pizzeria')
-      this.bar = res.data.filter(item => item.cat.it[0] == 'Bar')
-      this.other = res.data.filter(item => item.cat.it[0] !== 'Bar' && item.cat.it[0] !== 'Ristorante' && item.cat.it[0] !== 'Pizzeria')   
-}).catch(err => {
-      console.log(err)
-    })
+//     const url = 'https://os.smartcommunitylab.it/comuneintasca-multi/restaurants/TrentoInTasca'
+//     const data_default = {"center": [46.067369,11.121311],"radius": 0.01}
+//     axios.post(url, data_default).then(res => {
+//       const populate = res.data.map(item => this.items.push(item))
+//       this.rest = res.data.filter(item => item.cat.it[0] == 'Ristorante' || item.cat.it[0] == 'Pizzeria')
+//       this.bar = res.data.filter(item => item.cat.it[0] == 'Bar')
+//       this.other = res.data.filter(item => item.cat.it[0] !== 'Bar' && item.cat.it[0] !== 'Ristorante' && item.cat.it[0] !== 'Pizzeria')   
+// }).catch(err => {
+//       console.log(err)
+//     })
   },
+
   computed: {
     ...mapGetters({
       user: "user"
     })
   },
+  
   methods: {
     load(val) {
      switch (val) {
@@ -86,9 +140,37 @@ export default {
         this.$router.replace({name: 'List'})
         break;
      }
+  },
+
+  async sendSuggestion() {
+    const db = firebase.firestore()
+    this.error = null
+if (this.name == undefined || this.name == '') {
+      this.error = 'Inserisci il tuo nome.'
+    } else if (this.restname == undefined || this.restname == '') {
+      this.error = 'Inserisci un suggerimento.'
+    } else if (this.phone == undefined || this.phone == '') {
+      this.error = 'Inserisci il numero di telefono.'
+    } else {
+      await db.collection('suggestions').doc().set({name: this.name, restname: this.restname, phone: this.phone}).then(() => {this.showSnackbar = true})
+    }
+  },
+  
+ 
+
+  isNumber: function(evt) {
+      evt = (evt) ? evt : window.event;
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if ((charCode > 31 && (charCode < 48 || charCode > 57))) {
+        evt.preventDefault()
+      } else {
+        return true;
+      }
+    }
   }
-  }
-};
+
+
+}
 </script>
 
 <style>
@@ -102,9 +184,7 @@ export default {
   margin-bottom: 30px;
 }
 
-.right, .left {
-  width: 50%;
-}
+.right, .left {width: 50%;}
 
 .left {
   display: flex;
@@ -112,7 +192,6 @@ export default {
   padding: 10px;
   margin-top: 10px;
 }
-
 
 .input {
   background: #fff;
@@ -122,60 +201,66 @@ export default {
   margin: 0 auto;
   height: 15%;
   width: 90%
-
-  }
-  .input:focus {
-    outline: none;
   }
 
-  .links-container {
-    width: 70%;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    align-content: center;
-    justify-content: space-evenly;
+.input:focus {outline: none;}
+
+.links-container {
+  width: 70%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  justify-content: space-evenly;
   }
 
-  .links-item {
-    margin-top: 30px;
-    width: 400px;
-    height: 240px;
-    border-radius:10px;
-    background-color: #C9F2E3;
-    display:flex;
-    flex-direction: column;
-    align-content: center;
-    align-items: center;
-    padding: 10px;
+.links-item {
+  margin-top: 30px;
+  width: 400px;
+  height: 240px;
+  border-radius:10px;
+  background-color: #C9F2E3;
+  display:flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  padding: 10px;
   }
 
-  .links-item h2 {
-    font-size: 30px
-  }
+.links-item h2 {font-size: 30px}
 
-  .links-item  p {
-    font-size: 25px;
-  }
+.links-item  p {font-size: 25px;}
 
-/*  
-  .hscroll {
-    display:flex;
-    overflow-x: auto;
-    flex-wrap: wrap;
-    margin-top: 5%;
-  }
-  .menu-item {
-    margin-right:15px;
-    margin-bottom: 15px;
-    padding: 30px;
-    border-radius: 10px;
-    width: 30%
-  }
-  .hscoll::-webkit-scrollbar {
-    display: none;
+.suggestion  {
+  display:flex;
+  flex-direction: column;
+  height: 15vh;
+  margin: 0 auto;
+  width:80%;
+  margin-top: 70px;
+  justify-content: center;
+  align-items: center;
 }
 
-  li {list-style: none;} */
+.form-container {
+  display:flex;
+  height: 42vh;
+  margin: 0 auto;
+  background-color: #F8F5F5;
+  border-radius:10px;
+  width:80%;
+  margin-top: 40px;
+  margin-bottom: 100px;
+}
+
+.img, .form {width: 50%;}
+
+.img {padding:15px;}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
 </style> 

@@ -6,7 +6,7 @@
       TIP</md-button>
   </router-link>
       <router-link to="list"><md-button>Lista</md-button></router-link>
-      <router-link to="myvotes"><md-button>Space</md-button></router-link>
+      <router-link to="space"><md-button>Space</md-button></router-link>
       <router-link to="about"><md-button>About</md-button></router-link>
 
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="filters">
+        <div>
             <md-button @click="load('all')">Tutti</md-button>
             <md-button @click="load('rest')">Pizzerie</md-button>
             <md-button @click="load('bar')">Bar</md-button>
@@ -192,7 +192,8 @@ data() {
                 db.collection('votes').doc().set({
                     stars: this.stars,
                     usermail: this.user.data.email,
-                    restid: this.selected.id})
+                    restid: this.selected.id,
+                    restname: this.selected.title.it})
                 .then( () => {
                     this.showStarConfirm = false;
                     this.showDialog = false 
@@ -216,7 +217,8 @@ data() {
                 if (!v.favorites) {
                     db.collection('favorites').doc().set({
                         restid: v.id,
-                        usermail: this.user.data.email
+                        usermail: this.user.data.email,
+                        restname: this.selected.title.it
                     }).then(() => {
                         this.showDialog = false
                     }).catch(err => {
@@ -234,7 +236,3 @@ data() {
   }
 };
 </script>
-
-<style>
-    
-</style>, 

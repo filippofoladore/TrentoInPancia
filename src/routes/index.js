@@ -3,7 +3,7 @@ import Router from 'vue-router';
 import Login from '../components/Login'
 import Register from '../components/Register'
 import Home from '../components/Home'
-import MyVotes from '../components/MyVotes'
+import Space from '../components/Space'
 import About from '../components/About'
 import List from '../components/List'
 
@@ -29,9 +29,9 @@ const router = new Router({
         component: List
     },
     {
-        path: '/myvotes',
-        name: 'MyVotes',
-        component: MyVotes
+        path: '/space',
+        name: 'Space',
+        component: Space
     },
     {
         path: '/about',
