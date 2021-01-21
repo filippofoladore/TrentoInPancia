@@ -1,36 +1,22 @@
 <template>
-    <div>
-        <div>
-            <md-button @click="load('all')">Tutti</md-button>
-            <md-button @click="load('rest')">Pizzerie</md-button>
-            <md-button @click="load('bar')">Bar</md-button>
-            <md-button @click="load('other')">Altro</md-button>    
+    <div> 
+        <div style="display: flex;flex-wrap:wrap;width:100%; align-self:center">
+            <h1>Ristorante trovato</h1>
         </div>
-
-        <div style="display: flex;flex-wrap:wrap;margin-top:30px">
-            <li v-for="(f,index) in focus" :key="index" style="margin-right:10px; width: 100%; padding:10px;display:flex"  :style="{'justify-content': index % 2 === 0 ? 'flex-start' : 'flex-end'}">
-
-            <template v-if="index % 2 == 0">
-                <img :src="f.image" alt="immagine" style="width:200px;height:200px;" v-if="f.image != undefined">
+        <div style="display: flex;flex-wrap:wrap;width:70%; margin:0 auto;margin-top: 10%">
+            <template>
+                <img :src="search.image" alt="immagine" style="width:200px;height:200px;" v-if="search.image != undefined">
                 <div style="width:200px;height:200px;background-color:red;" v-else></div>
-                <h2 style="align-self:center;margin-left:15px">{{f.title.it}}</h2>
-                <md-button style="align-self:center;margin-left:15px" @click="logId(f)"><md-icon>search</md-icon></md-button>
-
+                <h2 style="align-self:center;margin-left:15px">{{search.title.it}}</h2>
+                <md-button style="align-self:center;margin-left:15px" @click="logId(search)"><md-icon>search</md-icon></md-button>
             </template>
 
-             <template v-else>
-                <md-button style="align-self:center;margin-right:15px" @click="logId(f)"><md-icon>search</md-icon></md-button>
-                <h2 style="align-self:center;margin-right:15px">{{f.title.it}}</h2>
-                <img :src="f.image" alt="immagine" style="width:200px;height:200px;" v-if="f.image != undefined">
-                <div style="width:200px;height:200px;background-color:red;" v-else></div>
-            </template>
-            </li>
         </div>
 
-        <md-dialog :md-active.sync="showDialog">
+<md-dialog :md-active.sync="showDialog">
              <md-dialog-title style="padding:10px;font-size:25px;text-align:center">Dettaglio Ristorante</md-dialog-title>
              <div style="display:flex;width:100%;" v-if="selected">
-                 <div style="width:50%;height:100%;align-self:flex-start"><img :src="selected.image" ></div>
+                 <div style="width:50%;height:100%;align-self:flex-start"><img :src="selected.image" style="width:100%; height:100%"></div>
                  <div style="width:50%">
                     <p style="padding:10px;font-size:20px" >
                         Nome: {{selected.title.it}} <br>
@@ -73,7 +59,10 @@
          <md-button class="md-primary" @click="redirectLogin">Login</md-button>
          <md-button class="md-primary" @click="showSnackbar = false">Chiudi</md-button>
         </md-snackbar>
-    </div>  
+
+
+    </div>
+    
 </template>
 
 <script>
@@ -82,58 +71,28 @@ import firebase from "firebase";
 import { mapGetters } from "vuex";
 
 export default {
-data() {
-    return {
-        search: '',
-        items: [],
-        focus: [],
-        showDialog: false,
-        showStarConfirm: false,
-        showSnackbar:false,
-        selected: null,
-        stars: 0,
-        snackbarDuration: 4000
-    }
-},
- computed: {
+    data() {
+        return {
+            search: {},
+            showDialog: false,
+            showStarConfirm: false,
+            showSnackbar:false,
+            selected: null,
+            stars: 0,
+            snackbarDuration: 4000
+        }
+    },
+    computed: {
     ...mapGetters({
       user: "user"
     })
   },
-  created() {
-      this.load(localStorage.getItem('toSearch'))
-},
+    created() {
+        this.search = JSON.parse(localStorage.getItem('search'))[0]
+    },
 
-  methods: {
-      load(val) {
-          localStorage.setItem('toSearch', val)
-        this.search =  localStorage.getItem('toSearch')
-            const url = 'https://os.smartcommunitylab.it/comuneintasca-multi/restaurants/TrentoInTasca'
-            const data_default = {"center": [46.067369,11.121311],"radius": 0.01}
-            axios.post(url, data_default).then(res => {
-                this.items = []
-                const populate = res.data.map(item => this.items.push(item))
-                switch ( localStorage.getItem('toSearch')) {
-                    case 'all':
-                        this.focus = this.items
-                        break;
-                    case 'rest':
-                        this.focus = res.data.filter(item => item.cat.it[0] == 'Ristorante' || item.cat.it[0] == 'Pizzeria')
-                        break;
-                    case 'bar':
-                        this.focus = res.data.filter(item => item.cat.it[0] == 'Bar')
-                        break;
-                    case 'other':
-                        this.focus = res.data.filter(item => item.cat.it[0] !== 'Bar' && item.cat.it[0] !== 'Ristorante' && item.cat.it[0] !== 'Pizzeria')  
-                        break;
-            }   
-}).catch(err => {
-      console.log(err)
-    })
-
-      },
-
-      logId(val) {  
+    methods: {
+        logId(val) {  
         this.selected = val
         const db = firebase.firestore()
         var vueInstance = this
@@ -232,6 +191,6 @@ data() {
                 }
             }
       }
-  }
-};
+    }
+}
 </script>

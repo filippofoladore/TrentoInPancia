@@ -3,29 +3,31 @@
   <div class="container">
     <div class="left">
       <h1 style="margin-left:25px;margin-bottom: 40px;">Dove si mangia <br> <br><span>stasera?</span></h1>
-      <input autocomplete="off" autocorrect="off" autocapitalize="off" class="input" placeholder="Cerca ristorante...">
-    </div>
+      <md-autocomplete v-model="selectedObj" :md-options="search" :md-open-on-focus="false" @md-selected="searchFunc">
+        <label>Cerca ristorante</label>
+      </md-autocomplete>
+      </div>
     <div class="right"><img src="dinner.svg" scale="2"></div>
   </div>
 
   <div class="links-container">
     <div class="links-item">
-      <h2>79</h2>
+      <h2>{{items.length}}</h2>
       <p>Luoghi in cui mangiare.</p>
       <md-button style="background-color: #FFAB50; color: #fff;border-radius:10px; margin: 0 auto; padding: 2px 15px;" @click="load('all')">Vedi tutti</md-button>
     </div>
     <div class="links-item">
-      <h2>49</h2>
+      <h2>{{rest.length}}</h2>
       <p>Ristoranti e pizzerie, l'eccellenza italiana.</p>
        <md-button style="background-color: #FFAB50; color: #fff;border-radius:10px; margin: 0 auto; padding: 2px 15px;" @click="load('rest')">Vedi tutti</md-button>
     </div>
     <div class="links-item">
-      <h2>20</h2>
+      <h2>{{bar.length}}</h2>
       <p>Bar, espresso o aperitivo?</p>
        <md-button style="background-color: #FFAB50; color: #fff;border-radius:10px; margin: 0 auto; padding: 2px 15px;" @click="load('bar')">Vedi tutti</md-button>
     </div>
     <div class="links-item">
-      <h2>9</h2>
+      <h2>{{other.length}}</h2>
       <p>Ristoranti con cui esplorare il mondo</p>
        <md-button style="background-color: #FFAB50; color: #fff;border-radius:10px; margin: 0 auto; padding: 2px 15px;" @click="load('other')">Vedi tutti</md-button>
     </div>
@@ -61,9 +63,8 @@
   </div>
 
    <md-snackbar md-position="center" :md-duration="snackbarDuration" :md-active.sync="showSnackbar" md-persistent>
-        <span>Suggerimento inviato, grazie!</span>
-         <md-button class="md-primary" @click="showSnackbar = false">Chiudi</md-button>
-        </md-snackbar>
+      <span>Suggerimento inviato, grazie!</span> <md-button class="md-primary" @click="showSnackbar = false">Chiudi</md-button>
+    </md-snackbar>
 
   <footer style="height: 25vh; background-image: url('Footer.png'); background-repeat: no-repeat;background-size: 100% 100%;">
       <dl style="display: flex; width: 50%; height: auto; margin: 0 auto; display: flex; align-self: center; transform: translateY(100px); justify-content: space-around">
@@ -97,21 +98,24 @@ export default {
       phone: '',
       error: null,
       snackbarDuration: 4000,
-      showSnackbar:false
+      showSnackbar:false,
+      search: [],
+      selectedObj: ''
     }
   },
 
   created() {
-//     const url = 'https://os.smartcommunitylab.it/comuneintasca-multi/restaurants/TrentoInTasca'
-//     const data_default = {"center": [46.067369,11.121311],"radius": 0.01}
-//     axios.post(url, data_default).then(res => {
-//       const populate = res.data.map(item => this.items.push(item))
-//       this.rest = res.data.filter(item => item.cat.it[0] == 'Ristorante' || item.cat.it[0] == 'Pizzeria')
-//       this.bar = res.data.filter(item => item.cat.it[0] == 'Bar')
-//       this.other = res.data.filter(item => item.cat.it[0] !== 'Bar' && item.cat.it[0] !== 'Ristorante' && item.cat.it[0] !== 'Pizzeria')   
-// }).catch(err => {
-//       console.log(err)
-//     })
+    const url = 'https://os.smartcommunitylab.it/comuneintasca-multi/restaurants/TrentoInTasca'
+    const data_default = {"center": [46.067369,11.121311],"radius": 0.01}
+    axios.post(url, data_default).then(res => {
+      const populate = res.data.map(item => this.items.push(item))
+      const populateSearch = this.items.map(item => this.search.push(item.title.it))
+      this.rest = res.data.filter(item => item.cat.it[0] == 'Ristorante' || item.cat.it[0] == 'Pizzeria')
+      this.bar = res.data.filter(item => item.cat.it[0] == 'Bar')
+      this.other = res.data.filter(item => item.cat.it[0] !== 'Bar' && item.cat.it[0] !== 'Ristorante' && item.cat.it[0] !== 'Pizzeria')   
+      }).catch(err => {
+        console.log(err)
+    })
   },
 
   computed: {
@@ -145,7 +149,7 @@ export default {
   async sendSuggestion() {
     const db = firebase.firestore()
     this.error = null
-if (this.name == undefined || this.name == '') {
+    if (this.name == undefined || this.name == '') {
       this.error = 'Inserisci il tuo nome.'
     } else if (this.restname == undefined || this.restname == '') {
       this.error = 'Inserisci un suggerimento.'
@@ -156,8 +160,6 @@ if (this.name == undefined || this.name == '') {
     }
   },
   
- 
-
   isNumber: function(evt) {
       evt = (evt) ? evt : window.event;
       var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -166,10 +168,15 @@ if (this.name == undefined || this.name == '') {
       } else {
         return true;
       }
-    }
+  },
+
+  searchFunc() {
+    const it = this.items.filter(item => item.title.it === this.selectedObj)
+    localStorage.setItem('search', JSON.stringify(it))
+    this.selectedObj = this.selectedObj.replace(/ /g,"_")
+    this.$router.replace({name: 'Search', query: {'s': this.selectedObj}})
   }
-
-
+  }
 }
 </script>
 
@@ -263,4 +270,5 @@ if (this.name == undefined || this.name == '') {
   flex-direction: column;
   justify-content: space-around;
 }
+ 
 </style> 

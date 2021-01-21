@@ -4,7 +4,7 @@ import Login from '../components/Login'
 import Register from '../components/Register'
 import Home from '../components/Home'
 import Space from '../components/Space'
-import About from '../components/About'
+import Search from '../components/Search'
 import List from '../components/List'
 
 Vue.use(Router)
@@ -34,9 +34,9 @@ const router = new Router({
         component: Space
     },
     {
-        path: '/about',
-        name: 'About',
-        component: About
+        path: '/search',
+        name: 'Search',
+        component: Search
     },
     {
         path: '/',
