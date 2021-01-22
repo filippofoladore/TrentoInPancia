@@ -262,7 +262,6 @@ export default {
 <style>
 .container {
   display: flex;
-  height: 42vh;
   margin: 0 auto;
   background-color: #c9f2e3;
   border-radius: 10px;
@@ -362,5 +361,15 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+}
+
+@media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 1) {
+  .container {
+    height: 42vh;
+  }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+  /* .container {height: 42vh} */
 }
 </style>
