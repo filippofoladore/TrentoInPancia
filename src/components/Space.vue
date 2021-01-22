@@ -24,7 +24,6 @@
 <script>
 import { mapGetters } from "vuex";
 import firebase from "firebase";
-import axios from "axios";
 
 export default {
   data() {
