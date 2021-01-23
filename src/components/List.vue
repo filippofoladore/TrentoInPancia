@@ -95,35 +95,35 @@
                 <li @click="setStar(1)" style="list-style-type:none">
                   <md-icon
                     style="margin-left:10px"
-                    :style="{ color: stars >= 1 ? 'yellow' : '' }"
+                    :style="{ color: stars >= 1 ? 'gold' : '' }"
                     >star</md-icon
                   >
                 </li>
                 <li @click="setStar(2)" style="list-style-type:none">
                   <md-icon
                     style="margin-left:10px"
-                    :style="{ color: stars >= 2 ? 'yellow' : '' }"
+                    :style="{ color: stars >= 2 ? 'gold' : '' }"
                     >star</md-icon
                   >
                 </li>
                 <li @click="setStar(3)" style="list-style-type:none">
                   <md-icon
                     style="margin-left:10px"
-                    :style="{ color: stars >= 3 ? 'yellow' : '' }"
+                    :style="{ color: stars >= 3 ? 'gold' : '' }"
                     >star</md-icon
                   >
                 </li>
                 <li @click="setStar(4)" style="list-style-type:none">
                   <md-icon
                     style="margin-left:10px"
-                    :style="{ color: stars >= 4 ? 'yellow' : '' }"
+                    :style="{ color: stars >= 4 ? 'gold' : '' }"
                     >star</md-icon
                   >
                 </li>
                 <li @click="setStar(5)" style="list-style-type:none">
                   <md-icon
                     style="margin-left:10px"
-                    :style="{ color: stars >= 5 ? 'yellow' : '' }"
+                    :style="{ color: stars >= 5 ? 'gold' : '' }"
                     >star</md-icon
                   >
                 </li>
