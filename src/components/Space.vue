@@ -24,7 +24,9 @@
             <div
               style="display:flex; width: 100%; justify-content:space-around"
             >
-              <p>{{ f.data.restname }}</p>
+              <p>
+                <strong>{{ f.data.restname }} </strong>
+              </p>
               <md-button @click="deleteFavorite(f)">
                 <md-icon>close</md-icon>
               </md-button>
@@ -35,7 +37,9 @@
             <div
               style="display: flex; width: 100%; justify-content: space-around;"
             >
-              <p>{{ f.restname }}</p>
+              <p>
+                <strong>{{ f.data.restname }} </strong>
+              </p>
               <div style="display:flex; flex-direction:row; align-self:center">
                 <li style="list-style-type: none">
                   <md-icon :style="{ color: f.stars >= 1 ? 'gold' : '' }"
@@ -106,7 +110,7 @@ export default {
     }),
   },
   created() {
-    this.loadfunc("vot");
+    this.loadfunc("fav");
   },
 
   methods: {

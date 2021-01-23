@@ -29,21 +29,21 @@
           >
             Immagine non disponibile
           </div>
-          <h2 style="align-self:center;margin-left:15px">{{ f.title.it }}</h2>
           <md-button
-            style="align-self:center;margin-left:15px"
             @click="openInfo(f)"
-            ><md-icon>search</md-icon></md-button
+            style="align-self:center; font-size: 1.15rem"
           >
+            {{ f.title.it }} <md-icon>search</md-icon>
+          </md-button>
         </template>
 
         <template v-else>
           <md-button
-            style="align-self:center;margin-right:15px"
             @click="openInfo(f)"
-            ><md-icon>search</md-icon></md-button
+            style="align-self:center; font-size: 1.15rem"
           >
-          <h2 style="align-self:center;margin-right:15px">{{ f.title.it }}</h2>
+            {{ f.title.it }} <md-icon>search</md-icon>
+          </md-button>
           <img
             :src="f.image"
             alt="immagine"

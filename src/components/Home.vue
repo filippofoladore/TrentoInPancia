@@ -13,7 +13,8 @@
           >
         </h1>
         <md-autocomplete
-          style="background-color:#fff; border: none; border-radius: 10px; padding: 10px 30px; margin: 0 auto; width: 90%; height: 20%"
+          style="background-color:#fff; border: none; border-radius: 10px; padding: 10px 30px; margin: 0 auto; width: 90%; height: 20%; font-size: 25px;"
+          md-menu-class="input-menu"
           v-model="selectedObj"
           :md-options="search"
           :md-open-on-focus="false"
@@ -276,10 +277,6 @@ export default {
   .left h1 {
     line-height: 30px;
   }
-
-  .links-item h2 {
-    font-size: 1rem;
-  }
 }
 
 .container {
@@ -317,6 +314,10 @@ export default {
   outline: none;
 }
 
+.input-menu {
+  width: 100%;
+}
+
 .links-container {
   width: 70%;
   margin: 0 auto;
@@ -341,11 +342,12 @@ export default {
 }
 
 .links-item h2 {
-  font-size: 30px;
+  font-size: 26px;
 }
 
 .links-item p {
-  font-size: 25px;
+  font-size: 22px;
+  text-align: center;
 }
 
 .suggestion {

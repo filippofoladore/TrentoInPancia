@@ -26,7 +26,7 @@
 
   <div v-else style="display: flex; justify-content: space-around">
     <router-link to="/" style="flex:1">
-      <md-button>TIP</md-button>
+      <md-button>TiP</md-button>
     </router-link>
     <md-button @click="openMenu"><md-icon>dehaze</md-icon></md-button>
     <div v-if="isOpen" style="width:100vh; height:100vh;">
