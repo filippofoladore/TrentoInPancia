@@ -1,11 +1,10 @@
 <template>
-  <md-toolbar class="md-transparent" md-elevation="0">
+  <md-toolbar class="md-transparent" md-elevation="0" v-if="wid > 1023">
     <router-link to="/" style="flex:1">
       <button class="btn btn-3"><span>TrentoInPancia</span></button>
     </router-link>
     <router-link to="list"><md-button>Lista</md-button></router-link>
     <router-link to="space"><md-button>Space</md-button></router-link>
-    <router-link to="about"><md-button>About</md-button></router-link>
 
     <template v-if="user.loggedIn">
       <div>
@@ -24,18 +23,70 @@
       >
     </template>
   </md-toolbar>
+
+  <div v-else style="display: flex; justify-content: space-around">
+    <router-link to="/" style="flex:1">
+      <md-button>TIP</md-button>
+    </router-link>
+    <md-button @click="openMenu"><md-icon>dehaze</md-icon></md-button>
+    <div v-if="isOpen" style="width:100vh; height:100vh;">
+      <router-link to="list"
+        ><md-button @click="isOpen = false">Lista</md-button></router-link
+      >
+      <router-link to="space"
+        ><md-button @click="isOpen = false">Space</md-button></router-link
+      >
+
+      <template v-if="user.loggedIn">
+        <div>
+          <md-icon>face</md-icon>
+          {{ user.data.displayName }}
+        </div>
+        <md-button
+          @click.prevent="
+            isOpen = false;
+            signOut();
+          "
+        >
+          Sign out</md-button
+        >
+      </template>
+
+      <template v-else>
+        <router-link to="login"
+          ><md-button
+            style="background-color:#3DCCF9;color:#fff;border-radius:10px;"
+            @click="isOpen = false"
+            >Login</md-button
+          ></router-link
+        >
+      </template>
+    </div>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import firebase from "firebase";
 export default {
+  data() {
+    return {
+      wid: window.innerWidth,
+      isOpen: false,
+    };
+  },
+  mounted() {
+    window.addEventListener("resize", this.onResize);
+  },
   computed: {
     ...mapGetters({
       user: "user",
     }),
   },
   methods: {
+    onResize(event) {
+      this.wid = event.target.innerWidth;
+    },
     signOut() {
       firebase
         .auth()
@@ -45,6 +96,9 @@ export default {
             name: "Home",
           });
         });
+    },
+    openMenu() {
+      this.isOpen = !this.isOpen;
     },
   },
 };

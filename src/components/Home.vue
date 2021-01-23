@@ -1,10 +1,16 @@
 <template>
   <div>
     <div class="container">
-      <div class="left">
+      <div class="left" :style="{ width: wid < 376 ? '100%' : '50%' }">
         <h1 style="margin-left:25px;margin-bottom: 40px;">
-          Dove si mangia <br />
-          <br /><span>stasera?</span>
+          <template v-if="wid > 376"
+            >Dove si mangia <br />
+            <br /><span>stasera?</span>
+          </template>
+          <template v-else
+            >Dove si mangia <br />
+            <span>stasera?</span></template
+          >
         </h1>
         <md-autocomplete
           style="background-color:#fff; border: none; border-radius: 10px; padding: 10px 30px; margin: 0 auto; width: 90%; height: 20%"
@@ -17,7 +23,9 @@
           <label style="margin-left: 10px;height: 100%">Cerca</label>
         </md-autocomplete>
       </div>
-      <div class="right"><img src="dinner.svg" scale="2" /></div>
+      <div class="right">
+        <img src="dinner.svg" scale="2" />
+      </div>
     </div>
 
     <div class="links-container">
@@ -146,6 +154,7 @@ import firebase from "firebase";
 export default {
   data() {
     return {
+      wid: window.innerWidth,
       items: [],
       bar: [],
       rest: [],
@@ -259,7 +268,20 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .container {
+    flex-wrap: wrap;
+  }
+  .left h1 {
+    line-height: 30px;
+  }
+
+  .links-item h2 {
+    font-size: 1rem;
+  }
+}
+
 .container {
   display: flex;
   margin: 0 auto;
@@ -367,9 +389,5 @@ export default {
   .container {
     height: 42vh;
   }
-}
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
-  /* .container {height: 42vh} */
 }
 </style>
