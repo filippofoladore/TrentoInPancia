@@ -32,7 +32,7 @@
           <h2 style="align-self:center;margin-left:15px">{{ f.title.it }}</h2>
           <md-button
             style="align-self:center;margin-left:15px"
-            @click="logId(f)"
+            @click="openInfo(f)"
             ><md-icon>search</md-icon></md-button
           >
         </template>
@@ -40,7 +40,7 @@
         <template v-else>
           <md-button
             style="align-self:center;margin-right:15px"
-            @click="logId(f)"
+            @click="openInfo(f)"
             ><md-icon>search</md-icon></md-button
           >
           <h2 style="align-self:center;margin-right:15px">{{ f.title.it }}</h2>
@@ -78,7 +78,7 @@
             </md-button>
             <md-button
               style="align-self:center;margin-left:15px"
-              @click="fav(selected)"
+              @click="sendFavorite(selected)"
               ><md-icon
                 :style="{ color: selected.favorites === true ? 'red' : '' }"
                 >favorite</md-icon
@@ -247,7 +247,7 @@ export default {
         });
     },
 
-    logId(val) {
+    openInfo(val) {
       this.selected = val;
       const db = firebase.firestore();
       var vueInstance = this;
@@ -345,7 +345,7 @@ export default {
       this.$router.replace({ name: "Login" });
     },
 
-    fav(v) {
+    sendFavorite(v) {
       const db = firebase.firestore();
       if (this.user.loggedIn == false) {
         this.showSnackbar = true;
