@@ -29,75 +29,179 @@
     </div>
 
     <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title style="padding:10px;font-size:25px;text-align:center"
-        >Dettaglio Ristorante</md-dialog-title
-      >
-      <div style="display:flex;width:100%;" v-if="selected">
-        <div style="width:50%;height:100%;align-self:flex-start">
-          <img :src="selected.image" style="width:100%; height:100%" />
-        </div>
-        <div style="width:50%">
-          <p style="padding:10px;font-size:20px">
-            Nome: {{ selected.title.it }} <br />
-            Categoria: {{ selected.cat.it[0] }} <br />
-            Telefono: {{ selected.contacts.phone }} <br />
-            <md-button style="background-color:#c5e1a5;border-radius:10px">
-              Chiama ora <md-icon>phone</md-icon>
-            </md-button>
-            <md-button
-              style="align-self:center;margin-left:15px"
-              @click="sendFavorite(selected)"
-              ><md-icon
-                :style="{ color: selected.favorites === true ? 'red' : '' }"
-                >favorite</md-icon
-              ></md-button
-            >
-          </p>
+      <template v-if="wid > 376">
+        <md-dialog-title style="padding:10px;font-size:25px;text-align:center"
+          >Dettaglio Ristorante</md-dialog-title
+        >
+        <div style="display:flex;width:100%;" v-if="selected">
+          <div style="width:50%;height:100%;align-self:flex-start">
+            <img :src="selected.image" style="height: 250px; width: 250px" />
+          </div>
+          <div style="width:50%">
+            <p style="padding:10px;font-size:20px">
+              Nome: {{ selected.title.it }} <br />
+              Categoria: {{ selected.cat.it[0] }} <br />
+              Telefono: {{ selected.contacts.phone }} <br />
+              <md-button style="background-color:#c5e1a5;border-radius:10px">
+                Chiama ora <md-icon>phone</md-icon>
+              </md-button>
+              <md-button
+                style="align-self:center;margin-left:15px"
+                @click="sendFavorite(selected)"
+                ><md-icon
+                  :style="{ color: selected.favorites === true ? 'red' : '' }"
+                  >favorite</md-icon
+                ></md-button
+              >
+            </p>
 
-          <div style="display:flex; padding:10px;font-size:18px">
-            Lascia un voto: <br />
-            <li @click="setStar(1)" style="list-style-type:none">
-              <md-icon
-                style="margin-left:10px"
-                :style="{ color: stars >= 1 ? 'yellow' : '' }"
-                >star</md-icon
+            <div style="display:flex; padding:10px;font-size:18px">
+              <div style="display: flex; flex-direction:column;">
+                <div>
+                  Lascia un voto:
+                </div>
+                <div style="display:flex; margin-top: 10px">
+                  <li @click="setStar(1)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 1 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(2)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 2 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(3)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 3 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(4)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 4 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(5)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 5 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                </div>
+              </div>
+
+              <br />
+              <div
+                style="width: 100%; display: flex; align-items: center;  justify-content: center;"
               >
-            </li>
-            <li @click="setStar(2)" style="list-style-type:none">
-              <md-icon
-                style="margin-left:10px"
-                :style="{ color: stars >= 2 ? 'yellow' : '' }"
-                >star</md-icon
-              >
-            </li>
-            <li @click="setStar(3)" style="list-style-type:none">
-              <md-icon
-                style="margin-left:10px"
-                :style="{ color: stars >= 3 ? 'yellow' : '' }"
-                >star</md-icon
-              >
-            </li>
-            <li @click="setStar(4)" style="list-style-type:none">
-              <md-icon
-                style="margin-left:10px"
-                :style="{ color: stars >= 4 ? 'yellow' : '' }"
-                >star</md-icon
-              >
-            </li>
-            <li @click="setStar(5)" style="list-style-type:none">
-              <md-icon
-                style="margin-left:10px"
-                :style="{ color: stars >= 5 ? 'yellow' : '' }"
-                >star</md-icon
-              >
-            </li>
-            <p>Media: {{ selected.average }} da {{ selected.nvotes }} voti</p>
+                Media: {{ selected.average }} da {{ selected.nvotes }}
+                {{ selected.nvotes > 1 ? "voti" : "voto" }}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <md-dialog-actions>
-        <md-button @click="showDialog = false">Chiudi</md-button>
-      </md-dialog-actions>
+
+        <md-dialog-actions>
+          <md-button @click="showDialog = false">Chiudi</md-button>
+        </md-dialog-actions>
+      </template>
+
+      <template v-else>
+        <md-dialog-title
+          style="padding:10px;font-size:1.15rem;text-align:center"
+          >Dettaglio Ristorante</md-dialog-title
+        >
+        <div style="display:flex;width:100%; flex-wrap: wrap" v-if="selected">
+          <div style="width:100%;">
+            <img :src="selected.image" />
+          </div>
+          <div style="width:100%">
+            <p style="padding:10px;font-size:20px">
+              Nome: {{ selected.title.it }} <br />
+              Categoria: {{ selected.cat.it[0] }} <br />
+              Telefono: {{ selected.contacts.phone }} <br />
+              <md-button style="background-color:#c5e1a5;border-radius:10px">
+                Chiama ora <md-icon>phone</md-icon>
+              </md-button>
+              <md-button
+                style="align-self:center;margin-left:15px"
+                @click="sendFavorite(selected)"
+                ><md-icon
+                  :style="{ color: selected.favorites === true ? 'red' : '' }"
+                  >favorite</md-icon
+                ></md-button
+              >
+            </p>
+
+            <div style="display:flex; padding:10px;font-size:18px">
+              <div style="display: flex; flex-direction:column;">
+                <div>
+                  Lascia un voto:
+                </div>
+                <div style="display:flex; margin-top: 10px">
+                  <li @click="setStar(1)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 1 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(2)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 2 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(3)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 3 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(4)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 4 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(5)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 5 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                </div>
+              </div>
+
+              <br />
+              <div
+                style="width: 100%; display: flex; align-items: center;  justify-content: center;"
+              >
+                Media: {{ selected.average }} da {{ selected.nvotes }}
+                {{ selected.nvotes > 1 ? "voti" : "voto" }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <md-dialog-actions>
+          <md-button @click="showDialog = false" style="font-weight: 900"
+            >Chiudi</md-button
+          >
+        </md-dialog-actions>
+      </template>
     </md-dialog>
 
     <md-dialog :md-active.sync="showStarConfirm">
@@ -139,6 +243,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      wid: window.innerWidth,
       search: {},
       showDialog: false,
       showStarConfirm: false,

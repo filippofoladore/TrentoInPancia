@@ -8,142 +8,227 @@
     </div>
 
     <div style="display: flex;flex-wrap:wrap;margin-top:30px">
-      <li
+      <div
         v-for="(f, index) in focus"
         :key="index"
-        style="margin-right:10px; width: 80%; padding:10px;display:flex;margin: 0 auto"
+        style="margin-right:10px; width: 80%; padding:10px;margin: 0 auto; display: flex;"
         :style="{
           'justify-content': index % 2 === 0 ? 'flex-start' : 'flex-end',
         }"
       >
         <template v-if="index % 2 == 0">
-          <img
-            :src="f.image"
-            alt="immagine"
-            style="width:200px;height:200px; border-radius: 10px"
-            v-if="f.image != undefined"
-          />
-          <div
-            style="width:200px;height:200px;background-color:#ccc; display: flex; justify-content:center; align-items: center; border-radius: 10px"
-            v-else
-          >
-            Immagine non disponibile
+          <div style="width: 30%">
+            <img :src="f.image" v-if="f.image != undefined" />
+            <div class="grey-image" v-else>Immagine non disponibile</div>
           </div>
-          <md-button
-            @click="openInfo(f)"
-            style="align-self:center; font-size: 1.15rem"
-          >
-            {{ f.title.it }} <md-icon>search</md-icon>
-          </md-button>
+          <div style="width: 70%; display: flex">
+            <md-button
+              style="align-self:center;"
+              :style="{ 'font-size': wid < 380 ? '0.75rem' : '1.15rem' }"
+              @click="openInfo(f)"
+            >
+              <span style="word-wrap: break-word; margin-right: 10px;">{{
+                f.title.it
+              }}</span>
+              <md-icon>search</md-icon>
+            </md-button>
+          </div>
         </template>
 
         <template v-else>
-          <md-button
-            @click="openInfo(f)"
-            style="align-self:center; font-size: 1.15rem"
-          >
-            {{ f.title.it }} <md-icon>search</md-icon>
-          </md-button>
-          <img
-            :src="f.image"
-            alt="immagine"
-            style="width:200px;height:200px; border-radius: 10px"
-            v-if="f.image != undefined"
-          />
-          <div
-            style="width:200px;height:200px;background-color:#ccc; display: flex; justify-content:center; align-items: center: border-radius: 10px"
-            v-else
-          >
-            Immagine non disponibile
+          <div style="width: 70%; display: flex;">
+            <md-button
+              style="align-self:center;"
+              :style="{ 'font-size': wid < 380 ? '0.75rem' : '1.15rem' }"
+              @click="openInfo(f)"
+              ><span style="word-wrap: break-word; margin-left: 10px">{{
+                f.title.it
+              }}</span
+              ><md-icon>search</md-icon>
+            </md-button>
+          </div>
+          <div style="width: 30%;">
+            <img :src="f.image" v-if="f.image != undefined" />
+            <div class="grey-image" v-else>Immagine non disponibile</div>
           </div>
         </template>
-      </li>
+      </div>
     </div>
 
     <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title style="padding:10px;font-size:25px;text-align:center"
-        >Dettaglio Ristorante</md-dialog-title
-      >
-      <div style="display:flex;width:100%;" v-if="selected">
-        <div style="width:50%;height:100%;align-self:flex-start">
-          <img :src="selected.image" style="height: 250px; width: 250px" />
-        </div>
-        <div style="width:50%">
-          <p style="padding:10px;font-size:20px">
-            Nome: {{ selected.title.it }} <br />
-            Categoria: {{ selected.cat.it[0] }} <br />
-            Telefono: {{ selected.contacts.phone }} <br />
-            <md-button style="background-color:#c5e1a5;border-radius:10px">
-              Chiama ora <md-icon>phone</md-icon>
-            </md-button>
-            <md-button
-              style="align-self:center;margin-left:15px"
-              @click="sendFavorite(selected)"
-              ><md-icon
-                :style="{ color: selected.favorites === true ? 'red' : '' }"
-                >favorite</md-icon
-              ></md-button
-            >
-          </p>
+      <template v-if="wid > 376">
+        <md-dialog-title style="padding:10px;font-size:25px;text-align:center"
+          >Dettaglio Ristorante</md-dialog-title
+        >
+        <div style="display:flex;width:100%;" v-if="selected">
+          <div style="width:50%;height:100%;align-self:flex-start">
+            <img :src="selected.image" style="height: 250px; width: 250px" />
+          </div>
+          <div style="width:50%">
+            <p style="padding:10px;font-size:20px">
+              Nome: {{ selected.title.it }} <br />
+              Categoria: {{ selected.cat.it[0] }} <br />
+              Telefono: {{ selected.contacts.phone }} <br />
+              <md-button style="background-color:#c5e1a5;border-radius:10px">
+                Chiama ora <md-icon>phone</md-icon>
+              </md-button>
+              <md-button
+                style="align-self:center;margin-left:15px"
+                @click="sendFavorite(selected)"
+                ><md-icon
+                  :style="{ color: selected.favorites === true ? 'red' : '' }"
+                  >favorite</md-icon
+                ></md-button
+              >
+            </p>
 
-          <div style="display:flex; padding:10px;font-size:18px">
-            <div style="display: flex; flex-direction:column;">
-              <div>
-                Lascia un voto:
+            <div style="display:flex; padding:10px;font-size:18px">
+              <div style="display: flex; flex-direction:column;">
+                <div>
+                  Lascia un voto:
+                </div>
+                <div style="display:flex; margin-top: 10px">
+                  <li @click="setStar(1)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 1 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(2)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 2 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(3)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 3 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(4)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 4 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(5)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 5 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                </div>
               </div>
-              <div style="display:flex; margin-top: 10px">
-                <li @click="setStar(1)" style="list-style-type:none">
-                  <md-icon
-                    style="margin-left:10px"
-                    :style="{ color: stars >= 1 ? 'gold' : '' }"
-                    >star</md-icon
-                  >
-                </li>
-                <li @click="setStar(2)" style="list-style-type:none">
-                  <md-icon
-                    style="margin-left:10px"
-                    :style="{ color: stars >= 2 ? 'gold' : '' }"
-                    >star</md-icon
-                  >
-                </li>
-                <li @click="setStar(3)" style="list-style-type:none">
-                  <md-icon
-                    style="margin-left:10px"
-                    :style="{ color: stars >= 3 ? 'gold' : '' }"
-                    >star</md-icon
-                  >
-                </li>
-                <li @click="setStar(4)" style="list-style-type:none">
-                  <md-icon
-                    style="margin-left:10px"
-                    :style="{ color: stars >= 4 ? 'gold' : '' }"
-                    >star</md-icon
-                  >
-                </li>
-                <li @click="setStar(5)" style="list-style-type:none">
-                  <md-icon
-                    style="margin-left:10px"
-                    :style="{ color: stars >= 5 ? 'gold' : '' }"
-                    >star</md-icon
-                  >
-                </li>
-              </div>
-            </div>
 
-            <br />
-            <div
-              style="width: 100%; display: flex; align-items: center;  justify-content: center;"
-            >
-              Media: {{ selected.average }} da {{ selected.nvotes }}
-              {{ selected.nvotes > 1 ? "voti" : "voto" }}
+              <br />
+              <div
+                style="width: 100%; display: flex; align-items: center;  justify-content: center;"
+              >
+                Media: {{ selected.average }} da {{ selected.nvotes }}
+                {{ selected.nvotes > 1 ? "voti" : "voto" }}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <md-dialog-actions>
-        <md-button @click="showDialog = false">Chiudi</md-button>
-      </md-dialog-actions>
+        <md-dialog-actions>
+          <md-button @click="showDialog = false">Chiudi</md-button>
+        </md-dialog-actions>
+      </template>
+
+      <template v-else>
+        <md-dialog-title
+          style="padding:10px;font-size:1.15rem;text-align:center"
+          >Dettaglio Ristorante</md-dialog-title
+        >
+        <div style="display:flex;width:100%; flex-wrap: wrap" v-if="selected">
+          <div style="width:100%;">
+            <img :src="selected.image" />
+          </div>
+          <div style="width:100%">
+            <p style="padding:10px;font-size:20px">
+              Nome: {{ selected.title.it }} <br />
+              Categoria: {{ selected.cat.it[0] }} <br />
+              Telefono: {{ selected.contacts.phone }} <br />
+              <md-button style="background-color:#c5e1a5;border-radius:10px">
+                Chiama ora <md-icon>phone</md-icon>
+              </md-button>
+              <md-button
+                style="align-self:center;margin-left:15px"
+                @click="sendFavorite(selected)"
+                ><md-icon
+                  :style="{ color: selected.favorites === true ? 'red' : '' }"
+                  >favorite</md-icon
+                ></md-button
+              >
+            </p>
+
+            <div style="display:flex; padding:10px;font-size:18px">
+              <div style="display: flex; flex-direction:column;">
+                <div>
+                  Lascia un voto:
+                </div>
+                <div style="display:flex; margin-top: 10px">
+                  <li @click="setStar(1)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 1 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(2)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 2 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(3)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 3 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(4)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 4 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                  <li @click="setStar(5)" style="list-style-type:none">
+                    <md-icon
+                      style="margin-left:10px"
+                      :style="{ color: stars >= 5 ? 'gold' : '' }"
+                      >star</md-icon
+                    >
+                  </li>
+                </div>
+              </div>
+
+              <br />
+              <div
+                style="width: 100%; display: flex; align-items: center;  justify-content: center;"
+              >
+                Media: {{ selected.average }} da {{ selected.nvotes }}
+                {{ selected.nvotes > 1 ? "voti" : "voto" }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <md-dialog-actions>
+          <md-button @click="showDialog = false" style="font-weight: 900"
+            >Chiudi</md-button
+          >
+        </md-dialog-actions>
+      </template>
     </md-dialog>
 
     <md-dialog :md-active.sync="showStarConfirm">
@@ -187,6 +272,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      wid: window.innerWidth,
       search: "",
       items: [],
       focus: [],
@@ -251,6 +337,7 @@ export default {
       this.selected = val;
       const db = firebase.firestore();
       var vueInstance = this;
+      this.stars = 0;
 
       //get voti
       db.collection("votes")
@@ -388,5 +475,17 @@ export default {
   font-size: 30px;
   text-align: center;
   min-height: 200px !important;
+}
+
+.grey-image {
+  width: 100%;
+  height: 100%;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 900;
 }
 </style>

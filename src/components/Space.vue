@@ -38,7 +38,7 @@
               style="display: flex; width: 100%; justify-content: space-around;"
             >
               <p>
-                <strong>{{ f.data.restname }} </strong>
+                <strong>{{ f.restname }} </strong>
               </p>
               <div style="display:flex; flex-direction:row; align-self:center">
                 <li style="list-style-type: none">
